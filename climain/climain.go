@@ -22,7 +22,7 @@ var _ = ExitFunc(os.Exit)
 
 // Run runs the main function for the given command with the given [ExitFunc] and arguments.
 //
-// The `cmd` argument represents the command to run. We will specifically invole the Main
+// The `cmd` argument represents the command to run. We will specifically invoke the Main
 // method of the [cliutils.Command] and exit (through `exitfn`) with 1 on error.
 //
 // The `exitfn` argument is the function to call when exiting the program, which is
