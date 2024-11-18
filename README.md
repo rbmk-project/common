@@ -6,6 +6,16 @@ This repository contains several general purpose libraries
 reused across different [rbmk](https://github.com/rbmk-project)
 repositories.
 
+## Installation
+
+```sh
+go get github.com/rbmk-project/common
+```
+
+## Design
+
+See [DESIGN.md](DESIGN.md) for an overview of the design.
+
 ## Contributing
 
 Contributions are welcome! Please submit a pull requests
