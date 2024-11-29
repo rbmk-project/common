@@ -89,23 +89,44 @@ func TestHelpRequested(t *testing.T) {
 	}
 
 	cases := []testcase{
+		// Empty argv and absence of any argument
 		{
-			argv:   []string{"--log-file", "log.jsonl", "-h"},
+			argv:   []string{},
+			expect: false,
+		},
+		{
+			argv:   []string{"dig"},
+			expect: false,
+		},
+
+		// Standalone help, help followed by arguments, help not as
+		// the second position in the argv
+		{
+			argv:   []string{"dig", "help"},
+			expect: true,
+		},
+		{
+			argv:   []string{"dig", "help", "log.jsonl"},
+			expect: true,
+		},
+		{
+			argv:   []string{"dig", "--log-file", "log.jsonl", "help"},
+			expect: false,
+		},
+
+		// With -h or --help as the last argument
+		{
+			argv:   []string{"dig", "--log-file", "log.jsonl", "-h"},
+			expect: true,
+		},
+		{
+			argv:   []string{"dig", "--log-file", "log.jsonl", "--help"},
 			expect: true,
 		},
 
+		// Without any of -h, --help, or help
 		{
-			argv:   []string{"--log-file", "log.jsonl", "help"},
-			expect: true,
-		},
-
-		{
-			argv:   []string{"--log-file", "log.jsonl", "--help"},
-			expect: true,
-		},
-
-		{
-			argv:   []string{"--log-file", "log.jsonl"},
+			argv:   []string{"dig", "--log-file", "log.jsonl"},
 			expect: false,
 		},
 	}
