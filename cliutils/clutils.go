@@ -133,14 +133,15 @@ func (dc defaultCommand) Main(ctx context.Context, argv ...string) error {
 }
 
 // HelpRequested reads the argv and returns whether it contains
-// one of `-h`, `--help`, and `help`. If this happens a subcommand
-// should invoke its own help method to print help.
+// one of `-h`, `--help`, in any position, or `help` as the first
+// element in the vector. If this happens a subcommand should
+// invoke its own help method to print help.
 func HelpRequested(argv ...string) bool {
 	for _, arg := range argv {
 		switch {
-		case arg == "-h" || arg == "--help" || arg == "help":
+		case arg == "-h" || arg == "--help":
 			return true
 		}
 	}
-	return false
+	return len(argv) > 1 && argv[1] == "help"
 }
