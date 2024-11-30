@@ -15,11 +15,6 @@ type DialContextFunc = func(ctx context.Context, network, address string) (net.C
 
 // singleDialer ensures we dial just once.
 //
-// Test case: https://avdox.globalvoices.org/ seems to enter
-// the Go &http.Client{} into a loop (WTF?!) so as a mitigation
-// until we understand the issue, and perhaps in general, make
-// sure there is just a single dial per host.
-//
 // The zero value is ready to use.
 type singleDialer struct {
 	count atomic.Int32
