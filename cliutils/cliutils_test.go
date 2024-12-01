@@ -28,7 +28,7 @@ func (f fakecmd) Main(ctx context.Context, env cliutils.Environment, argv ...str
 }
 
 func TestStandardEnvironment(t *testing.T) {
-	env := &cliutils.StandardEnvironment{}
+	env := cliutils.StandardEnvironment{}
 	if env.Stderr() != os.Stderr {
 		t.Fatal("expected os.Stderr")
 	}
@@ -76,7 +76,7 @@ func TestCommandWithSubCommands(t *testing.T) {
 					"env": fakecmd{},
 				},
 			)
-			stdenv := &cliutils.StandardEnvironment{}
+			stdenv := cliutils.StandardEnvironment{}
 			err := cmd.Main(context.Background(), stdenv, tc.argv...)
 			switch {
 			case tc.failure == "" && err == nil:
