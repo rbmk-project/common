@@ -4,6 +4,7 @@ package cliutils_test
 
 import (
 	"context"
+	"os"
 	"strings"
 	"testing"
 
@@ -17,13 +18,23 @@ type fakecmd struct {
 var _ cliutils.Command = fakecmd{}
 
 // Help implements [cliutils.Command].
-func (f fakecmd) Help(argv ...string) error {
+func (f fakecmd) Help(env cliutils.Environment, argv ...string) error {
 	return nil
 }
 
 // Main implements [cliutils.Command].
-func (f fakecmd) Main(ctx context.Context, argv ...string) error {
+func (f fakecmd) Main(ctx context.Context, env cliutils.Environment, argv ...string) error {
 	return f.err
+}
+
+func TestStandardEnvironment(t *testing.T) {
+	env := &cliutils.StandardEnvironment{}
+	if env.Stderr() != os.Stderr {
+		t.Fatal("expected os.Stderr")
+	}
+	if env.Stdout() != os.Stdout {
+		t.Fatal("expected os.Stdout")
+	}
 }
 
 func TestCommandWithSubCommands(t *testing.T) {
@@ -65,7 +76,8 @@ func TestCommandWithSubCommands(t *testing.T) {
 					"env": fakecmd{},
 				},
 			)
-			err := cmd.Main(context.Background(), tc.argv...)
+			stdenv := &cliutils.StandardEnvironment{}
+			err := cmd.Main(context.Background(), stdenv, tc.argv...)
 			switch {
 			case tc.failure == "" && err == nil:
 				// all good

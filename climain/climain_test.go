@@ -19,12 +19,12 @@ type fakecmd struct {
 var _ cliutils.Command = fakecmd{}
 
 // Help implements [cliutils.Command].
-func (f fakecmd) Help(argv ...string) error {
+func (f fakecmd) Help(env cliutils.Environment, argv ...string) error {
 	return nil
 }
 
 // Main implements [cliutils.Command].
-func (f fakecmd) Main(ctx context.Context, argv ...string) error {
+func (f fakecmd) Main(ctx context.Context, env cliutils.Environment, argv ...string) error {
 	return f.err
 }
 
