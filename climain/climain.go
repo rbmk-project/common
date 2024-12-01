@@ -46,7 +46,8 @@ func Run(cmd cliutils.Command, exitfn ExitFunc, argv ...string) {
 	}()
 
 	// 3. run the selected command.
-	if err := cmd.Main(ctx, argv...); err != nil {
+	env := cliutils.StandardEnvironment{}
+	if err := cmd.Main(ctx, env, argv...); err != nil {
 		exitfn(1)
 	}
 }

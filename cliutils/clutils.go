@@ -7,16 +7,42 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 )
+
+// Environment is the environment for executing a [Command].
+type Environment interface {
+	// Stderr returns the stderr writer to use.
+	Stderr() io.Writer
+
+	// Stdout returns the stdout writer to use.
+	Stdout() io.Writer
+}
+
+// StandardEnvironment is the standard implementation of [Environment].
+type StandardEnvironment struct{}
+
+// Ensure that [StandardEnvironment] implements [Environment].
+var _ Environment = StandardEnvironment{}
+
+// Stderr implements Environment.
+func (se StandardEnvironment) Stderr() io.Writer {
+	return os.Stderr
+}
+
+// Stdout implements Environment.
+func (se StandardEnvironment) Stdout() io.Writer {
+	return os.Stdout
+}
 
 // Command is an rbmk command-line command.
 type Command interface {
 	// Help prints the help for the command on the stdout.
-	Help(argv ...string) error
+	Help(env Environment, argv ...string) error
 
 	// Main executes the command main function.
-	Main(ctx context.Context, argv ...string) error
+	Main(ctx context.Context, env Environment, argv ...string) error
 }
 
 // CommandWithSubCommands is a [Command] that contains subcommands.
@@ -62,10 +88,10 @@ func NewCommandWithSubCommands(name string, help string, commands map[string]Com
 var _ Command = CommandWithSubCommands{}
 
 // Help implements [Command].
-func (c CommandWithSubCommands) Help(argv ...string) error {
+func (c CommandWithSubCommands) Help(env Environment, argv ...string) error {
 	// 1. case where we're invoked with no arguments
 	if len(argv) < 2 {
-		fmt.Fprintf(os.Stderr, "%s\n", c.help)
+		fmt.Fprintf(env.Stderr(), "%s\n", c.help)
 		return nil
 	}
 
@@ -73,25 +99,25 @@ func (c CommandWithSubCommands) Help(argv ...string) error {
 	command := c.getCommand(argv[1])
 
 	// 3. print the command help
-	return command.Help(argv[1:]...)
+	return command.Help(env, argv[1:]...)
 }
 
 // Main implements [Command].
-func (c CommandWithSubCommands) Main(ctx context.Context, argv ...string) error {
+func (c CommandWithSubCommands) Main(ctx context.Context, env Environment, argv ...string) error {
 	switch {
 	case len(argv) < 2:
-		return c.Help()
+		return c.Help(env)
 
 	case argv[1] == "--help":
-		return c.Help()
+		return c.Help(env)
 	case argv[1] == "-h":
-		return c.Help()
+		return c.Help(env)
 	case argv[1] == "help":
-		return c.Help(argv[1:]...)
+		return c.Help(env, argv[1:]...)
 
 	default:
 		command := c.getCommand(argv[1])
-		return command.Main(ctx, argv[1:]...)
+		return command.Main(ctx, env, argv[1:]...)
 	}
 }
 
@@ -119,16 +145,16 @@ func newDefaultCommand(name string) defaultCommand {
 var _ Command = defaultCommand{}
 
 // Help implements [Command].
-func (dc defaultCommand) Help(argv ...string) error {
+func (dc defaultCommand) Help(env Environment, argv ...string) error {
 	err := errors.New("no such help topic")
-	fmt.Fprintf(os.Stderr, "%s help: %s.\nTry `%s --help`.\n", dc.name, err.Error(), dc.name)
+	fmt.Fprintf(env.Stderr(), "%s help: %s.\nTry `%s --help`.\n", dc.name, err.Error(), dc.name)
 	return err
 }
 
 // Main implements [Command].
-func (dc defaultCommand) Main(ctx context.Context, argv ...string) error {
+func (dc defaultCommand) Main(ctx context.Context, env Environment, argv ...string) error {
 	err := errors.New("no such command")
-	fmt.Fprintf(os.Stderr, "%s %s: %s.\nTry `%s --help`.\n", dc.name, argv[0], err.Error(), dc.name)
+	fmt.Fprintf(env.Stderr(), "%s %s: %s.\nTry `%s --help`.\n", dc.name, argv[0], err.Error(), dc.name)
 	return err
 }
 
