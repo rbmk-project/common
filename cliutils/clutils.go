@@ -13,6 +13,9 @@ import (
 
 // Environment is the environment for executing a [Command].
 type Environment interface {
+	// Stdin returns the stdin reader to use.
+	Stdin() io.Reader
+
 	// Stderr returns the stderr writer to use.
 	Stderr() io.Writer
 
@@ -26,12 +29,17 @@ type StandardEnvironment struct{}
 // Ensure that [StandardEnvironment] implements [Environment].
 var _ Environment = StandardEnvironment{}
 
-// Stderr implements Environment.
+// Stdin implements [Environment].
+func (se StandardEnvironment) Stdin() io.Reader {
+	return os.Stdin
+}
+
+// Stderr implements [Environment].
 func (se StandardEnvironment) Stderr() io.Writer {
 	return os.Stderr
 }
 
-// Stdout implements Environment.
+// Stdout implements [Environment].
 func (se StandardEnvironment) Stdout() io.Writer {
 	return os.Stdout
 }
