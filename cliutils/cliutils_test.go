@@ -29,6 +29,9 @@ func (f fakecmd) Main(ctx context.Context, env cliutils.Environment, argv ...str
 
 func TestStandardEnvironment(t *testing.T) {
 	env := cliutils.StandardEnvironment{}
+	if env.Stdin() != os.Stdin {
+		t.Fatal("expected os.Stdin")
+	}
 	if env.Stderr() != os.Stderr {
 		t.Fatal("expected os.Stderr")
 	}
