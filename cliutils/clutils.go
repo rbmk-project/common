@@ -75,22 +75,22 @@ type CommandWithSubCommands struct {
 	name string
 
 	// renderer is the help renderer.
-	renderer HelpRenderer
+	renderer LazyHelpRenderer
 }
 
-// HelpRenderer renders the help possibly adding colours and formatting.
-type HelpRenderer interface {
-	RenderHelp() string
+// LazyHelpRenderer renders the help possibly adding colours and formatting.
+type LazyHelpRenderer interface {
+	Help() string
 }
 
-// HelpRendererFunc is a function that implements [HelpRenderer].
-type HelpRendererFunc func() string
+// LazyHelpRendererFunc is a function that implements [LazyHelpRenderer].
+type LazyHelpRendererFunc func() string
 
-// Ensure that [HelpRendererFunc] implements [HelpRenderer].
-var _ HelpRenderer = HelpRendererFunc(nil)
+// Ensure that [LazyHelpRendererFunc] implements [LazyHelpRenderer].
+var _ LazyHelpRenderer = LazyHelpRendererFunc(nil)
 
-// RenderHelp implements HelpRenderer.
-func (fx HelpRendererFunc) RenderHelp() string {
+// Help implements HelpRenderer.
+func (fx LazyHelpRendererFunc) Help() string {
 	return fx()
 }
 
@@ -102,7 +102,7 @@ func (fx HelpRendererFunc) RenderHelp() string {
 //
 // The commands argument contains the implemented subcommands.
 func NewCommandWithSubCommands(name string,
-	renderer HelpRenderer, commands map[string]Command) CommandWithSubCommands {
+	renderer LazyHelpRenderer, commands map[string]Command) CommandWithSubCommands {
 	return CommandWithSubCommands{
 		commands: commands,
 		name:     name,
@@ -116,7 +116,7 @@ var _ Command = CommandWithSubCommands{}
 func (c CommandWithSubCommands) Help(env Environment, argv ...string) error {
 	// 1. case where we're invoked with no arguments
 	if len(argv) < 2 {
-		fmt.Fprintf(env.Stderr(), "%s\n", c.renderer.RenderHelp())
+		fmt.Fprintf(env.Stderr(), "%s\n", c.renderer.Help())
 		return nil
 	}
 
