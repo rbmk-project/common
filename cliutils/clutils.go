@@ -71,25 +71,42 @@ type CommandWithSubCommands struct {
 	// commands is the map of subcommands.
 	commands map[string]Command
 
-	// help is the help string.
-	help string
-
 	// name is the full name of this command.
 	name string
+
+	// renderer is the help renderer.
+	renderer HelpRenderer
+}
+
+// HelpRenderer renders the help possibly adding colours and formatting.
+type HelpRenderer interface {
+	RenderHelp() string
+}
+
+// HelpRendererFunc is a function that implements [HelpRenderer].
+type HelpRendererFunc func() string
+
+// Ensure that [HelpRendererFunc] implements [HelpRenderer].
+var _ HelpRenderer = HelpRendererFunc(nil)
+
+// RenderHelp implements HelpRenderer.
+func (fx HelpRendererFunc) RenderHelp() string {
+	return fx()
 }
 
 // NewCommandWithSubCommands constructs a [CommandWithSubCommands].
 //
 // The name argument contains the full name of this command (e.g., `rbmk run`).
 //
-// The help argument contains the help string.
+// The renderer argument renders the help on demand.
 //
 // The commands argument contains the implemented subcommands.
-func NewCommandWithSubCommands(name string, help string, commands map[string]Command) CommandWithSubCommands {
+func NewCommandWithSubCommands(name string,
+	renderer HelpRenderer, commands map[string]Command) CommandWithSubCommands {
 	return CommandWithSubCommands{
 		commands: commands,
-		help:     help,
 		name:     name,
+		renderer: renderer,
 	}
 }
 
@@ -99,7 +116,7 @@ var _ Command = CommandWithSubCommands{}
 func (c CommandWithSubCommands) Help(env Environment, argv ...string) error {
 	// 1. case where we're invoked with no arguments
 	if len(argv) < 2 {
-		fmt.Fprintf(env.Stderr(), "%s\n", c.help)
+		fmt.Fprintf(env.Stderr(), "%s\n", c.renderer.RenderHelp())
 		return nil
 	}
 
