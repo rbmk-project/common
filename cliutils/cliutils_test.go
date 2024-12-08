@@ -75,7 +75,7 @@ func TestCommandWithSubCommands(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(strings.Join(tc.argv, " "), func(t *testing.T) {
 			cmd := cliutils.NewCommandWithSubCommands(
-				"rbmk", "", map[string]cliutils.Command{
+				"rbmk", cliutils.LazyHelpRendererFunc(func() string { return "" }), map[string]cliutils.Command{
 					"env": fakecmd{},
 				},
 			)
