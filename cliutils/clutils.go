@@ -9,10 +9,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/rbmk-project/common/fsx"
 )
 
 // Environment is the environment for executing a [Command].
 type Environment interface {
+	// FS returns the virtual filesystem to use.
+	FS() fsx.FS
+
 	// Stdin returns the stdin reader to use.
 	Stdin() io.Reader
 
@@ -28,6 +33,11 @@ type StandardEnvironment struct{}
 
 // Ensure that [StandardEnvironment] implements [Environment].
 var _ Environment = StandardEnvironment{}
+
+// FS implements [Environment].
+func (se StandardEnvironment) FS() fsx.FS {
+	return fsx.OsFS{}
+}
 
 // Stdin implements [Environment].
 func (se StandardEnvironment) Stdin() io.Reader {
