@@ -31,6 +31,7 @@ const (
 	O_RDWR   = fsmodel.O_RDWR
 	O_TRUNC  = fsmodel.O_TRUNC
 	O_WRONLY = fsmodel.O_WRONLY
+	O_APPEND = fsmodel.O_APPEND
 )
 
 // IsNotExist combines the [os.ErrNotExist] check with

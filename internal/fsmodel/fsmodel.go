@@ -18,6 +18,7 @@ const (
 	O_RDWR   = os.O_RDWR
 	O_TRUNC  = os.O_TRUNC
 	O_WRONLY = os.O_WRONLY
+	O_APPEND = os.O_APPEND
 )
 
 // File represents a file in the filesystem.
