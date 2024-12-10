@@ -21,7 +21,7 @@ func TestRelativeFS(t *testing.T) {
 	type testCase struct {
 		name     string
 		path     string
-		setup    func(*mocks.FsmodelFS)
+		setup    func(*mocks.FS)
 		testFunc func(*fsx.RelativeFS, string) error
 		want     error
 	}
@@ -40,7 +40,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockChmod = func(name string, mode fs.FileMode) error {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -57,7 +57,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Chmod(path, 0600)
 				},
@@ -67,7 +67,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Chmod(path, 0600)
 				},
@@ -79,7 +79,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockChown = func(name string, uid, gid int) error {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -96,7 +96,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Chown(path, 1000, 1000)
 				},
@@ -106,7 +106,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Chown(path, 1000, 1000)
 				},
@@ -118,7 +118,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockChtimes = func(name string, atime, mtime time.Time) error {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -136,7 +136,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					now := time.Now()
 					return fs.Chtimes(path, now, now)
@@ -147,7 +147,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					now := time.Now()
 					return fs.Chtimes(path, now, now)
@@ -160,7 +160,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockCreate = func(name string) (fsx.File, error) {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -178,7 +178,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Create(path)
 					return err
@@ -189,7 +189,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Create(path)
 					return err
@@ -202,7 +202,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "socket.sock",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockDialUnix = func(name string) (net.Conn, error) {
 						if name != "/base/socket.sock" {
 							t.Fatalf("expected path %q, got %q", "/base/socket.sock", name)
@@ -220,7 +220,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.DialUnix(path)
 					return err
@@ -231,7 +231,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.DialUnix(path)
 					return err
@@ -244,7 +244,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "socket.sock",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockListenUnix = func(name string) (net.Listener, error) {
 						if name != "/base/socket.sock" {
 							t.Fatalf("expected path %q, got %q", "/base/socket.sock", name)
@@ -262,7 +262,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.ListenUnix(path)
 					return err
@@ -273,7 +273,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.ListenUnix(path)
 					return err
@@ -286,7 +286,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockLstat = func(name string) (fs.FileInfo, error) {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -304,7 +304,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Lstat(path)
 					return err
@@ -315,7 +315,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Lstat(path)
 					return err
@@ -328,7 +328,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "dir",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockMkdir = func(name string, perm fs.FileMode) error {
 						if name != "/base/dir" {
 							t.Fatalf("expected path %q, got %q", "/base/dir", name)
@@ -345,7 +345,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Mkdir(path, 0755)
 				},
@@ -355,7 +355,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Mkdir(path, 0755)
 				},
@@ -367,7 +367,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "dir/subdir",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockMkdirAll = func(name string, perm fs.FileMode) error {
 						if name != "/base/dir/subdir" {
 							t.Fatalf("expected path %q, got %q", "/base/dir/subdir", name)
@@ -384,7 +384,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.MkdirAll(path, 0755)
 				},
@@ -394,7 +394,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.MkdirAll(path, 0755)
 				},
@@ -406,7 +406,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockOpen = func(name string) (fsx.File, error) {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -424,7 +424,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Open(path)
 					return err
@@ -435,7 +435,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Open(path)
 					return err
@@ -448,7 +448,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockOpenFile = func(name string, flag int, perm fs.FileMode) (fsx.File, error) {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -466,7 +466,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.OpenFile(path, fsx.O_CREATE|fsx.O_WRONLY, 0644)
 					return err
@@ -477,7 +477,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.OpenFile(path, fsx.O_CREATE|fsx.O_WRONLY, 0644)
 					return err
@@ -490,7 +490,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "dir",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockReadDir = func(name string) ([]fs.DirEntry, error) {
 						if name != "/base/dir" {
 							t.Fatalf("expected path %q, got %q", "/base/dir", name)
@@ -508,7 +508,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.ReadDir(path)
 					return err
@@ -519,7 +519,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.ReadDir(path)
 					return err
@@ -532,7 +532,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockRemove = func(name string) error {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -549,7 +549,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Remove(path)
 				},
@@ -559,7 +559,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Remove(path)
 				},
@@ -571,7 +571,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "dir",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockRemoveAll = func(name string) error {
 						if name != "/base/dir" {
 							t.Fatalf("expected path %q, got %q", "/base/dir", name)
@@ -588,7 +588,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.RemoveAll(path)
 				},
@@ -598,7 +598,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.RemoveAll(path)
 				},
@@ -610,7 +610,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "old.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockRename = func(oldname, newname string) error {
 						if oldname != "/base/old.txt" || newname != "/base/new.txt" {
 							t.Fatalf("expected paths %q and %q, got %q and %q", "/base/old.txt", "/base/new.txt", oldname, newname)
@@ -627,7 +627,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePathFirst",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Rename(path, "new.txt")
 				},
@@ -637,7 +637,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePathFirst",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Rename(path, "new.txt")
 				},
@@ -647,7 +647,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePathSecond",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Rename("old.txt", path)
 				},
@@ -657,7 +657,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePathSecond",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					return fs.Rename("old.txt", path)
 				},
@@ -669,7 +669,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name: "RelativePathWithinBase",
 				path: "file.txt",
-				setup: func(mockFS *mocks.FsmodelFS) {
+				setup: func(mockFS *mocks.FS) {
 					mockFS.MockStat = func(name string) (fs.FileInfo, error) {
 						if name != "/base/file.txt" {
 							t.Fatalf("expected path %q, got %q", "/base/file.txt", name)
@@ -687,7 +687,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "AbsolutePath",
 				path:  filepath.FromSlash(absolutePath),
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Stat(path)
 					return err
@@ -698,7 +698,7 @@ func TestRelativeFS(t *testing.T) {
 			{
 				name:  "OutsideBasePath",
 				path:  "../outside",
-				setup: func(mockFS *mocks.FsmodelFS) {},
+				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.RelativeFS, path string) error {
 					_, err := fs.Stat(path)
 					return err
@@ -711,7 +711,7 @@ func TestRelativeFS(t *testing.T) {
 	for groupName, group := range tests {
 		for _, tt := range group {
 			t.Run(groupName+": "+tt.name, func(t *testing.T) {
-				mockFS := &mocks.FsmodelFS{}
+				mockFS := &mocks.FS{}
 				tt.setup(mockFS)
 				relativeFS := fsx.NewRelativeFS(mockFS, "/base")
 

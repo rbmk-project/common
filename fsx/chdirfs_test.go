@@ -18,7 +18,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Chmod", func(t *testing.T) {
 		expectedPath := "/base/attrs.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockChmod: func(name string, mode fs.FileMode) error {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -37,7 +37,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Chown", func(t *testing.T) {
 		expectedPath := "/base/attrs.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockChown: func(name string, uid, gid int) error {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -56,7 +56,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Chtimes", func(t *testing.T) {
 		expectedPath := "/base/attrs.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockChtimes: func(name string, atime time.Time, mtime time.Time) error {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -75,7 +75,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Create", func(t *testing.T) {
 		expectedPath := "/base/test.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockCreate: func(name string) (fsx.File, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -94,7 +94,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("DialUnix", func(t *testing.T) {
 		expectedPath := "/base/test.sock"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockDialUnix: func(name string) (net.Conn, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -113,7 +113,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("ListenUnix", func(t *testing.T) {
 		expectedPath := "/base/test.sock"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockListenUnix: func(name string) (net.Listener, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -132,7 +132,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Lstat", func(t *testing.T) {
 		expectedPath := "/base/attrs.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockLstat: func(name string) (fs.FileInfo, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -151,7 +151,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Mkdir", func(t *testing.T) {
 		expectedPath := "/base/testdir"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockMkdir: func(name string, perm fs.FileMode) error {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -170,7 +170,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("MkdirAll", func(t *testing.T) {
 		expectedPath := "/base/testdir"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockMkdirAll: func(name string, perm fs.FileMode) error {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -189,7 +189,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Open", func(t *testing.T) {
 		expectedPath := "/base/test.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockOpen: func(name string) (fsx.File, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -208,7 +208,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("OpenFile", func(t *testing.T) {
 		expectedPath := "/base/modes.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockOpenFile: func(name string, flag int, perm fs.FileMode) (fsx.File, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -227,7 +227,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("ReadDir", func(t *testing.T) {
 		expectedPath := "/base/testdir"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockReadDir: func(dirname string) ([]fs.DirEntry, error) {
 				if dirname != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, dirname)
@@ -246,7 +246,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Remove", func(t *testing.T) {
 		expectedPath := "/base/remove.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockRemove: func(name string) error {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)
@@ -265,7 +265,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("RemoveAll", func(t *testing.T) {
 		expectedPath := "/base/removedir"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockRemoveAll: func(path string) error {
 				if path != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, path)
@@ -285,7 +285,7 @@ func TestChdirFS(t *testing.T) {
 	t.Run("Rename", func(t *testing.T) {
 		expectedOldPath := "/base/old.txt"
 		expectedNewPath := "/base/new.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockRename: func(oldname, newname string) error {
 				if oldname != expectedOldPath || newname != expectedNewPath {
 					t.Fatalf("expected paths %q and %q, got %q and %q", expectedOldPath, expectedNewPath, oldname, newname)
@@ -304,7 +304,7 @@ func TestChdirFS(t *testing.T) {
 
 	t.Run("Stat", func(t *testing.T) {
 		expectedPath := "/base/attrs.txt"
-		mockFS := &mocks.FsmodelFS{
+		mockFS := &mocks.FS{
 			MockStat: func(name string) (fs.FileInfo, error) {
 				if name != expectedPath {
 					t.Fatalf("expected path %q, got %q", expectedPath, name)

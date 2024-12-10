@@ -11,10 +11,10 @@ import (
 	"github.com/rbmk-project/common/mocks"
 )
 
-func TestFsmodelFS(t *testing.T) {
+func TestFS(t *testing.T) {
 	t.Run("Chmod", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockChmod: func(name string, mode fs.FileMode) error {
 				return expected
 			},
@@ -27,7 +27,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Chown", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockChown: func(name string, uid, gid int) error {
 				return expected
 			},
@@ -40,7 +40,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Chtimes", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockChtimes: func(name string, atime, mtime time.Time) error {
 				return expected
 			},
@@ -53,7 +53,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Create", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockCreate: func(name string) (fsmodel.File, error) {
 				return nil, expected
 			},
@@ -66,7 +66,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("DialUnix", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockDialUnix: func(name string) (net.Conn, error) {
 				return nil, expected
 			},
@@ -79,7 +79,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("ListenUnix", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockListenUnix: func(name string) (net.Listener, error) {
 				return nil, expected
 			},
@@ -92,7 +92,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Lstat", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockLstat: func(name string) (fs.FileInfo, error) {
 				return nil, expected
 			},
@@ -105,7 +105,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Mkdir", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockMkdir: func(name string, perm fs.FileMode) error {
 				return expected
 			},
@@ -118,7 +118,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("MkdirAll", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockMkdirAll: func(path string, perm fs.FileMode) error {
 				return expected
 			},
@@ -131,7 +131,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Open", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockOpen: func(name string) (fsmodel.File, error) {
 				return nil, expected
 			},
@@ -144,7 +144,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("OpenFile", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockOpenFile: func(name string, flag int, perm fs.FileMode) (fsmodel.File, error) {
 				return nil, expected
 			},
@@ -157,7 +157,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("ReadDir", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockReadDir: func(dirname string) ([]fs.DirEntry, error) {
 				return nil, expected
 			},
@@ -170,7 +170,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Remove", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockRemove: func(name string) error {
 				return expected
 			},
@@ -183,7 +183,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("RemoveAll", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockRemoveAll: func(path string) error {
 				return expected
 			},
@@ -196,7 +196,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Rename", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockRename: func(oldname, newname string) error {
 				return expected
 			},
@@ -209,7 +209,7 @@ func TestFsmodelFS(t *testing.T) {
 
 	t.Run("Stat", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		fs := &mocks.FsmodelFS{
+		fs := &mocks.FS{
 			MockStat: func(name string) (fs.FileInfo, error) {
 				return nil, expected
 			},
@@ -221,10 +221,10 @@ func TestFsmodelFS(t *testing.T) {
 	})
 }
 
-func TestFsmodelFile(t *testing.T) {
+func TestFile(t *testing.T) {
 	t.Run("Read", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		file := &mocks.FsmodelFile{
+		file := &mocks.File{
 			MockRead: func(b []byte) (int, error) {
 				return 0, expected
 			},
@@ -240,7 +240,7 @@ func TestFsmodelFile(t *testing.T) {
 
 	t.Run("Write", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		file := &mocks.FsmodelFile{
+		file := &mocks.File{
 			MockWrite: func(b []byte) (int, error) {
 				return 0, expected
 			},
@@ -256,7 +256,7 @@ func TestFsmodelFile(t *testing.T) {
 
 	t.Run("Close", func(t *testing.T) {
 		expected := errors.New("mocked error")
-		file := &mocks.FsmodelFile{
+		file := &mocks.File{
 			MockClose: func() error {
 				return expected
 			},

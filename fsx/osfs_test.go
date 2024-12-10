@@ -14,7 +14,7 @@ import (
 
 func TestOsFileWrapper(t *testing.T) {
 	t.Run("Close", func(t *testing.T) {
-		mockFile := &mocks.FsmodelFile{
+		mockFile := &mocks.File{
 			MockClose: func() error {
 				return errors.New("close error")
 			},
@@ -28,7 +28,7 @@ func TestOsFileWrapper(t *testing.T) {
 	})
 
 	t.Run("Read", func(t *testing.T) {
-		mockFile := &mocks.FsmodelFile{
+		mockFile := &mocks.File{
 			MockRead: func(b []byte) (int, error) {
 				return 0, errors.New("read error")
 			},
@@ -46,7 +46,7 @@ func TestOsFileWrapper(t *testing.T) {
 	})
 
 	t.Run("Write", func(t *testing.T) {
-		mockFile := &mocks.FsmodelFile{
+		mockFile := &mocks.File{
 			MockWrite: func(b []byte) (int, error) {
 				return 0, errors.New("write error")
 			},
@@ -66,7 +66,7 @@ func TestOsFileWrapper(t *testing.T) {
 
 func TestMaybeWrapOSFile(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
-		mockFile := &mocks.FsmodelFile{}
+		mockFile := &mocks.File{}
 		file, err := maybeWrapOSFile(mockFile, nil)
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)

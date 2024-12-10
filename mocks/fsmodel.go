@@ -8,8 +8,14 @@ import (
 	"github.com/rbmk-project/common/internal/fsmodel"
 )
 
-// FsmodelFS implements [fsmodel.FS] for testing
-type FsmodelFS struct {
+// FsmodelFS is an alias for [fsmodel.FS].
+type FsmodelFS = fsmodel.FS
+
+// FsmodelFile is an alias for [fsmodel.File].
+type FsmodelFile = fsmodel.File
+
+// FS implements [FsmodelFS] for testing
+type FS struct {
 	// MockChmod implements Chmod
 	MockChmod func(name string, mode fs.FileMode) error
 
@@ -20,7 +26,7 @@ type FsmodelFS struct {
 	MockChtimes func(name string, atime time.Time, mtime time.Time) error
 
 	// MockCreate implements Create
-	MockCreate func(name string) (fsmodel.File, error)
+	MockCreate func(name string) (FsmodelFile, error)
 
 	// MockDialUnix implements DialUnix
 	MockDialUnix func(name string) (net.Conn, error)
@@ -38,10 +44,10 @@ type FsmodelFS struct {
 	MockMkdirAll func(path string, perm fs.FileMode) error
 
 	// MockOpen implements Open
-	MockOpen func(name string) (fsmodel.File, error)
+	MockOpen func(name string) (FsmodelFile, error)
 
 	// MockOpenFile implements OpenFile
-	MockOpenFile func(name string, flag int, perm fs.FileMode) (fsmodel.File, error)
+	MockOpenFile func(name string, flag int, perm fs.FileMode) (FsmodelFile, error)
 
 	// MockReadDir implements ReadDir
 	MockReadDir func(dirname string) ([]fs.DirEntry, error)
@@ -59,91 +65,91 @@ type FsmodelFS struct {
 	MockStat func(name string) (fs.FileInfo, error)
 }
 
-// Ensure FS implements fsmodel.FS
-var _ fsmodel.FS = &FsmodelFS{}
+// Ensure [FS] implements [FsmodelFS]
+var _ FsmodelFS = &FS{}
 
 // Chmod calls MockChmod
-func (m *FsmodelFS) Chmod(name string, mode fs.FileMode) error {
+func (m *FS) Chmod(name string, mode fs.FileMode) error {
 	return m.MockChmod(name, mode)
 }
 
 // Chown calls MockChown
-func (m *FsmodelFS) Chown(name string, uid, gid int) error {
+func (m *FS) Chown(name string, uid, gid int) error {
 	return m.MockChown(name, uid, gid)
 }
 
 // Chtimes calls MockChtimes
-func (m *FsmodelFS) Chtimes(name string, atime, mtime time.Time) error {
+func (m *FS) Chtimes(name string, atime, mtime time.Time) error {
 	return m.MockChtimes(name, atime, mtime)
 }
 
 // Create calls MockCreate
-func (m *FsmodelFS) Create(name string) (fsmodel.File, error) {
+func (m *FS) Create(name string) (FsmodelFile, error) {
 	return m.MockCreate(name)
 }
 
 // DialUnix calls MockDialUnix
-func (m *FsmodelFS) DialUnix(name string) (net.Conn, error) {
+func (m *FS) DialUnix(name string) (net.Conn, error) {
 	return m.MockDialUnix(name)
 }
 
 // ListenUnix calls MockListenUnix
-func (m *FsmodelFS) ListenUnix(name string) (net.Listener, error) {
+func (m *FS) ListenUnix(name string) (net.Listener, error) {
 	return m.MockListenUnix(name)
 }
 
 // Lstat calls MockLstat
-func (m *FsmodelFS) Lstat(name string) (fs.FileInfo, error) {
+func (m *FS) Lstat(name string) (fs.FileInfo, error) {
 	return m.MockLstat(name)
 }
 
 // Mkdir calls MockMkdir
-func (m *FsmodelFS) Mkdir(name string, perm fs.FileMode) error {
+func (m *FS) Mkdir(name string, perm fs.FileMode) error {
 	return m.MockMkdir(name, perm)
 }
 
 // MkdirAll calls MockMkdirAll
-func (m *FsmodelFS) MkdirAll(path string, perm fs.FileMode) error {
+func (m *FS) MkdirAll(path string, perm fs.FileMode) error {
 	return m.MockMkdirAll(path, perm)
 }
 
 // Open calls MockOpen
-func (m *FsmodelFS) Open(name string) (fsmodel.File, error) {
+func (m *FS) Open(name string) (FsmodelFile, error) {
 	return m.MockOpen(name)
 }
 
 // OpenFile calls MockOpenFile
-func (m *FsmodelFS) OpenFile(name string, flag int, perm fs.FileMode) (fsmodel.File, error) {
+func (m *FS) OpenFile(name string, flag int, perm fs.FileMode) (FsmodelFile, error) {
 	return m.MockOpenFile(name, flag, perm)
 }
 
 // ReadDir calls MockReadDir
-func (m *FsmodelFS) ReadDir(dirname string) ([]fs.DirEntry, error) {
+func (m *FS) ReadDir(dirname string) ([]fs.DirEntry, error) {
 	return m.MockReadDir(dirname)
 }
 
 // Remove calls MockRemove
-func (m *FsmodelFS) Remove(name string) error {
+func (m *FS) Remove(name string) error {
 	return m.MockRemove(name)
 }
 
 // RemoveAll calls MockRemoveAll
-func (m *FsmodelFS) RemoveAll(path string) error {
+func (m *FS) RemoveAll(path string) error {
 	return m.MockRemoveAll(path)
 }
 
 // Rename calls MockRename
-func (m *FsmodelFS) Rename(oldname, newname string) error {
+func (m *FS) Rename(oldname, newname string) error {
 	return m.MockRename(oldname, newname)
 }
 
 // Stat calls MockStat
-func (m *FsmodelFS) Stat(name string) (fs.FileInfo, error) {
+func (m *FS) Stat(name string) (fs.FileInfo, error) {
 	return m.MockStat(name)
 }
 
-// FsmodelFile implements [fsmodel.File] for testing
-type FsmodelFile struct {
+// File implements [FsmodelFile] for testing
+type File struct {
 	// MockRead implements Read
 	MockRead func(b []byte) (int, error)
 
@@ -154,20 +160,20 @@ type FsmodelFile struct {
 	MockClose func() error
 }
 
-// Ensure FsmodelFile implements [fsmodel.File].
-var _ fsmodel.File = &FsmodelFile{}
+// Ensure [File] implements [FsmodelFile].
+var _ FsmodelFile = &File{}
 
 // Read calls MockRead
-func (m *FsmodelFile) Read(b []byte) (int, error) {
+func (m *File) Read(b []byte) (int, error) {
 	return m.MockRead(b)
 }
 
 // Write calls MockWrite
-func (m *FsmodelFile) Write(b []byte) (int, error) {
+func (m *File) Write(b []byte) (int, error) {
 	return m.MockWrite(b)
 }
 
 // Close calls MockClose
-func (m *FsmodelFile) Close() error {
+func (m *File) Close() error {
 	return m.MockClose()
 }
