@@ -12,13 +12,6 @@ This package is derived from [afero].
 In addition to [afero], we also implement support for dialing
 and listening unix domain sockets, and for Lstat.
 
-The [NewRelativeFS] creates a filesystem relative to a given
-directory that only allows:
-
-1. Accessing files within the base directory.
-
-2. Changing working directory to a subdirectory of the base directory.
-
 [afero]: https://github.com/spf13/afero
 */
 package fsx
