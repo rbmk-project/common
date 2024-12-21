@@ -14,7 +14,17 @@ import (
 	"time"
 )
 
-// NewRelativeFS creates a new [FS] rooted at the given path
+// NewRelativeFS is a deprecated alias for [NewContainedFS].
+//
+// Deprecated: use [NewContainedFS] instead.
+var NewRelativeFS = NewContainedFS
+
+// RelativeFS is a deprecated alias for [ContainedFS].
+//
+// Deprecated: use [ContainedFS] instead.
+type RelativeFS = ContainedFS
+
+// NewContainedFS creates a new [FS] rooted at the given path
 // using the given child [FS] as the dependency.
 //
 // Any file name (after [filepath.Clean]) outside this base
@@ -27,14 +37,14 @@ import (
 // Note: This implementation cannot prevent symlink traversal
 // attacks. The caller must ensure the base directory does not
 // contain symlinks if this is a security requirement.
-func NewRelativeFS(dep FS, path string) *RelativeFS {
-	return &RelativeFS{basepath: path, dep: dep}
+func NewContainedFS(dep FS, path string) *ContainedFS {
+	return &ContainedFS{basepath: path, dep: dep}
 }
 
-// RelativeFS is the [FS] type returned by [NewRelativeFS].
+// ContainedFS is the [FS] type returned by [NewContainedFS].
 //
-// The zero value IS NOT ready to use; construct using [NewRelativeFS].
-type RelativeFS struct {
+// The zero value IS NOT ready to use; construct using [NewContainedFS].
+type ContainedFS struct {
 	// basepath is the base path.
 	basepath string
 
@@ -43,10 +53,10 @@ type RelativeFS struct {
 }
 
 // Ensure [basePathFS] implements [FS].
-var _ FS = &RelativeFS{}
+var _ FS = &ContainedFS{}
 
 // realPath returns the real path of a given file name or an error.
-func (rfs *RelativeFS) realPath(name string) (string, error) {
+func (rfs *ContainedFS) realPath(name string) (string, error) {
 	// 1. entirely reject absolute path names
 	if filepath.IsAbs(name) {
 		return "", fs.ErrNotExist
@@ -62,7 +72,7 @@ func (rfs *RelativeFS) realPath(name string) (string, error) {
 }
 
 // Chmod implements [FS].
-func (rfs *RelativeFS) Chmod(name string, mode fs.FileMode) error {
+func (rfs *ContainedFS) Chmod(name string, mode fs.FileMode) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "chmod", Path: name, Err: err}
@@ -71,7 +81,7 @@ func (rfs *RelativeFS) Chmod(name string, mode fs.FileMode) error {
 }
 
 // Chown implements [FS].
-func (rfs *RelativeFS) Chown(name string, uid, gid int) error {
+func (rfs *ContainedFS) Chown(name string, uid, gid int) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "chown", Path: name, Err: err}
@@ -80,7 +90,7 @@ func (rfs *RelativeFS) Chown(name string, uid, gid int) error {
 }
 
 // Chtimes implements [FS].
-func (rfs *RelativeFS) Chtimes(name string, atime, mtime time.Time) error {
+func (rfs *ContainedFS) Chtimes(name string, atime, mtime time.Time) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "chtimes", Path: name, Err: err}
@@ -89,7 +99,7 @@ func (rfs *RelativeFS) Chtimes(name string, atime, mtime time.Time) error {
 }
 
 // Create implements [FS].
-func (rfs *RelativeFS) Create(name string) (File, error) {
+func (rfs *ContainedFS) Create(name string) (File, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "create", Path: name, Err: err}
@@ -98,7 +108,7 @@ func (rfs *RelativeFS) Create(name string) (File, error) {
 }
 
 // DialUnix implements [FS].
-func (rfs *RelativeFS) DialUnix(name string) (net.Conn, error) {
+func (rfs *ContainedFS) DialUnix(name string) (net.Conn, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "dialunix", Path: name, Err: err}
@@ -107,7 +117,7 @@ func (rfs *RelativeFS) DialUnix(name string) (net.Conn, error) {
 }
 
 // ListenUnix implements [FS].
-func (rfs *RelativeFS) ListenUnix(name string) (net.Listener, error) {
+func (rfs *ContainedFS) ListenUnix(name string) (net.Listener, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "listenunix", Path: name, Err: err}
@@ -116,7 +126,7 @@ func (rfs *RelativeFS) ListenUnix(name string) (net.Listener, error) {
 }
 
 // Lstat implements [FS].
-func (rfs *RelativeFS) Lstat(name string) (fs.FileInfo, error) {
+func (rfs *ContainedFS) Lstat(name string) (fs.FileInfo, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "lstat", Path: name, Err: err}
@@ -125,7 +135,7 @@ func (rfs *RelativeFS) Lstat(name string) (fs.FileInfo, error) {
 }
 
 // Mkdir implements [FS].
-func (rfs *RelativeFS) Mkdir(name string, mode fs.FileMode) error {
+func (rfs *ContainedFS) Mkdir(name string, mode fs.FileMode) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "mkdir", Path: name, Err: err}
@@ -134,7 +144,7 @@ func (rfs *RelativeFS) Mkdir(name string, mode fs.FileMode) error {
 }
 
 // MkdirAll implements [FS].
-func (rfs *RelativeFS) MkdirAll(name string, mode fs.FileMode) error {
+func (rfs *ContainedFS) MkdirAll(name string, mode fs.FileMode) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "mkdir", Path: name, Err: err}
@@ -143,7 +153,7 @@ func (rfs *RelativeFS) MkdirAll(name string, mode fs.FileMode) error {
 }
 
 // Open implements [FS].
-func (rfs *RelativeFS) Open(name string) (File, error) {
+func (rfs *ContainedFS) Open(name string) (File, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "open", Path: name, Err: err}
@@ -152,7 +162,7 @@ func (rfs *RelativeFS) Open(name string) (File, error) {
 }
 
 // OpenFile implements [FS].
-func (rfs *RelativeFS) OpenFile(name string, flag int, mode fs.FileMode) (File, error) {
+func (rfs *ContainedFS) OpenFile(name string, flag int, mode fs.FileMode) (File, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "openfile", Path: name, Err: err}
@@ -161,7 +171,7 @@ func (rfs *RelativeFS) OpenFile(name string, flag int, mode fs.FileMode) (File, 
 }
 
 // ReadDir implements [FS].
-func (rfs *RelativeFS) ReadDir(name string) ([]fs.DirEntry, error) {
+func (rfs *ContainedFS) ReadDir(name string) ([]fs.DirEntry, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "readdir", Path: name, Err: err}
@@ -170,7 +180,7 @@ func (rfs *RelativeFS) ReadDir(name string) ([]fs.DirEntry, error) {
 }
 
 // Remove implements [FS].
-func (rfs *RelativeFS) Remove(name string) error {
+func (rfs *ContainedFS) Remove(name string) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "remove", Path: name, Err: err}
@@ -179,7 +189,7 @@ func (rfs *RelativeFS) Remove(name string) error {
 }
 
 // RemoveAll implements [FS].
-func (rfs *RelativeFS) RemoveAll(name string) error {
+func (rfs *ContainedFS) RemoveAll(name string) error {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return &fs.PathError{Op: "removeall", Path: name, Err: err}
@@ -188,7 +198,7 @@ func (rfs *RelativeFS) RemoveAll(name string) error {
 }
 
 // Rename implements [FS].
-func (rfs *RelativeFS) Rename(oldname, newname string) error {
+func (rfs *ContainedFS) Rename(oldname, newname string) error {
 	oldname, err := rfs.realPath(oldname)
 	if err != nil {
 		return &fs.PathError{Op: "rename", Path: oldname, Err: err}
@@ -201,7 +211,7 @@ func (rfs *RelativeFS) Rename(oldname, newname string) error {
 }
 
 // Stat implements [FS].
-func (rfs *RelativeFS) Stat(name string) (fs.FileInfo, error) {
+func (rfs *ContainedFS) Stat(name string) (fs.FileInfo, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
 		return nil, &fs.PathError{Op: "stat", Path: name, Err: err}
