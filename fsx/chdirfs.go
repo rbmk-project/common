@@ -21,6 +21,14 @@ func NewChdirFS(dep FS, path string) *ChdirFS {
 
 // ChdirFS is the [FS] type returned by [NewChdirFS].
 //
+// Portability note: Unix domain sockets have path length limitations
+// ranging around ~100 chars (e.g., 108 on Linux, 104 on macOS) for
+// historical reasons (see, e.g., https://unix.stackexchange.com/q/367008).
+// When using [ChdirFS] with Unix domain sockets, therefore, it is
+// possible to get `EINVAL` errors in `bind`, which occurs when the
+// combined path is too long. If possible, consider using a relative
+// base path (if you know you'll never chdir elsewhere).
+//
 // The zero value IS NOT ready to use; construct using [NewChdirFS].
 type ChdirFS struct {
 	// basepath is the base path.
@@ -64,6 +72,8 @@ func (rfs *ChdirFS) DialUnix(name string) (net.Conn, error) {
 }
 
 // ListenUnix implements [FS].
+//
+// See also the limitations documented in the [ChdirFS] type.
 func (rfs *ChdirFS) ListenUnix(name string) (net.Listener, error) {
 	return rfs.dep.ListenUnix(rfs.realPath(name))
 }
