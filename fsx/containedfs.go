@@ -14,6 +14,16 @@ import (
 	"time"
 )
 
+// NewRelativeFS is a deprecated alias for [NewContainedFS].
+//
+// Deprecated: use [NewContainedFS] instead.
+var NewRelativeFS = NewContainedFS
+
+// RelativeFS is a deprecated alias for [ContainedFS].
+//
+// Deprecated: use [ContainedFS] instead.
+type RelativeFS = ContainedFS
+
 // NewContainedFS creates a new [FS] rooted at the given path
 // using the given child [FS] as the dependency.
 //
