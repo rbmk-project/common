@@ -108,6 +108,8 @@ func (rfs *ContainedFS) Create(name string) (File, error) {
 }
 
 // DialUnix implements [FS].
+//
+// See also the limitations documented in the top-level package docs.
 func (rfs *ContainedFS) DialUnix(name string) (net.Conn, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
@@ -117,6 +119,8 @@ func (rfs *ContainedFS) DialUnix(name string) (net.Conn, error) {
 }
 
 // ListenUnix implements [FS].
+//
+// See also the limitations documented in the top-level package docs.
 func (rfs *ContainedFS) ListenUnix(name string) (net.Listener, error) {
 	name, err := rfs.realPath(name)
 	if err != nil {
