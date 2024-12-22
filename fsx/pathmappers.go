@@ -31,33 +31,39 @@ func (fx RealPathMapperFunc) RealPath(virtualPath string) (realPath string, err 
 // Mockable [filepath.Abs] function for testing.
 var filepathAbs = filepath.Abs
 
-// ChdirPathMapper is a [RealPathMapper] that prepends
+// PrefixDirPathMapper is a [RealPathMapper] that prepends
 // a base directory to the virtual path.
 //
-// The zero value is invalid. Use [NewRelativeChdirPathMapper] or
-// [NewAbsoluteChdirPathMapper] to construct a new instance.
-type ChdirPathMapper struct {
+// The zero value is invalid. Use [NewRelativePrefixDirPathMapper] or
+// [NewAbsolutePrefixDirPathMapper] to construct a new instance.
+type PrefixDirPathMapper struct {
 	// baseDir is the base directory to prepend.
 	baseDir string
 }
 
-// NewAbsoluteChdirPathMapper converts the given directory
+// ChdirPathMapper is a deprecated alias for [PrefixDirPathMapper].
+type ChdirPathMapper = PrefixDirPathMapper
+
+// NewAbsolutePrefixDirPathMapper converts the given directory
 // to an absolute path and, on success, returns a new
-// [*ChdirPathMapper] instance. On failure, it returns and error.
+// [*PrefixDirPathMapper] instance. On failure, it returns and error.
 //
 // # Usage Considerations
 //
-// Use this constructor when you want your [*ChdirPathMapper] to
+// Use this constructor when you want your [*PrefixDirPathMapper] to
 // be robust against concurrent invocations of [os.Chdir].
-func NewAbsoluteChdirPathMapper(baseDir string) (*ChdirPathMapper, error) {
+func NewAbsolutePrefixDirPathMapper(baseDir string) (*PrefixDirPathMapper, error) {
 	absBaseDir, err := filepathAbs(baseDir)
 	if err != nil {
 		return nil, err
 	}
-	return &ChdirPathMapper{baseDir: absBaseDir}, nil
+	return &PrefixDirPathMapper{baseDir: absBaseDir}, nil
 }
 
-// NewRelativeChdirPathMapper returns a new [*ChdirPathMapper]
+// NewChdirPathMapper is a deprecated alias for [NewAbsolutePrefixDirPathMapper].
+var NewChdirPathMapper = NewAbsolutePrefixDirPathMapper
+
+// NewRelativePrefixDirPathMapper returns a new [*PrefixDirPathMapper]
 // instance without bothering to check if the given directory
 // is relative or absolute.
 //
@@ -67,15 +73,18 @@ func NewAbsoluteChdirPathMapper(baseDir string) (*ChdirPathMapper, error) {
 // to invoke [os.Chdir] so you can avoid building potentially long
 // paths that could break Unix domain sockets as documented in
 // the top-level package documentation.
-func NewRelativeChdirPathMapper(baseDir string) *ChdirPathMapper {
-	return &ChdirPathMapper{baseDir: baseDir}
+func NewRelativePrefixDirPathMapper(baseDir string) *PrefixDirPathMapper {
+	return &PrefixDirPathMapper{baseDir: baseDir}
 }
 
-// Ensure [ChdirPathMapper] implements [RealPathMapper].
-var _ RealPathMapper = &ChdirPathMapper{}
+// NewRelativeChdirPathMapper is a deprecated alias for [NewRelativePrefixDirPathMapper].
+var NewRelativeChdirPathMapper = NewRelativePrefixDirPathMapper
+
+// Ensure [PrefixDirPathMapper] implements [RealPathMapper].
+var _ RealPathMapper = &PrefixDirPathMapper{}
 
 // RealPath implements [RealPathMapper].
-func (b *ChdirPathMapper) RealPath(virtualPath string) (realPath string, err error) {
+func (b *PrefixDirPathMapper) RealPath(virtualPath string) (realPath string, err error) {
 	return filepath.Join(b.baseDir, virtualPath), nil
 }
 
