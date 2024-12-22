@@ -74,7 +74,7 @@ func TestOverlayFS(t *testing.T) {
 			},
 
 			{
-				name:  "BasePath",
+				name:  "OutsideBase",
 				path:  "../outside",
 				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.OverlayFS, path string) error {
@@ -104,7 +104,7 @@ func TestOverlayFS(t *testing.T) {
 			},
 
 			{
-				name:  "BasePath",
+				name:  "OutsideBase",
 				path:  "../outside",
 				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.OverlayFS, path string) error {
@@ -197,7 +197,7 @@ func TestOverlayFS(t *testing.T) {
 			},
 
 			{
-				name:  "BasePath",
+				name:  "OutsideBase",
 				path:  "../outside",
 				setup: func(mockFS *mocks.FS) {},
 				testFunc: func(fs *fsx.OverlayFS, path string) error {
