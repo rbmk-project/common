@@ -46,16 +46,6 @@ func TestPathMappers(t *testing.T) {
 				},
 
 				{
-					name: "relative mapper with relative path",
-					construct: func(baseDir string) (RealPathMapper, error) {
-						return NewRelativeChdirPathMapper(baseDir), nil
-					},
-					baseDir: "testdata",
-					path:    "file.txt",
-					want:    filepath.Join("testdata", "file.txt"),
-				},
-
-				{
 					name: "absolute mapper with error",
 					construct: func(baseDir string) (RealPathMapper, error) {
 						return NewAbsoluteChdirPathMapper(baseDir)
@@ -65,6 +55,16 @@ func TestPathMappers(t *testing.T) {
 						return "", errMocked
 					},
 					wantError: errMocked,
+				},
+
+				{
+					name: "relative mapper with relative path",
+					construct: func(baseDir string) (RealPathMapper, error) {
+						return NewRelativeChdirPathMapper(baseDir), nil
+					},
+					baseDir: "testdata",
+					path:    "file.txt",
+					want:    filepath.Join("testdata", "file.txt"),
 				},
 			},
 		},
