@@ -60,8 +60,8 @@ func NewAbsolutePrefixDirPathMapper(baseDir string) (*PrefixDirPathMapper, error
 	return &PrefixDirPathMapper{baseDir: absBaseDir}, nil
 }
 
-// NewChdirPathMapper is a deprecated alias for [NewAbsolutePrefixDirPathMapper].
-var NewChdirPathMapper = NewAbsolutePrefixDirPathMapper
+// NewAbsoluteChdirPathMapper is a deprecated alias for [NewAbsolutePrefixDirPathMapper].
+var NewAbsoluteChdirPathMapper = NewAbsolutePrefixDirPathMapper
 
 // NewRelativePrefixDirPathMapper returns a new [*PrefixDirPathMapper]
 // instance without bothering to check if the given directory
