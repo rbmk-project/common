@@ -44,7 +44,7 @@ const (
 	O_APPEND = fsmodel.O_APPEND
 )
 
-// IsNotExist combines the [os.ErrNotExist] check with
+// IsNotExist combines the [os.IsNotExist] check with
 // checking for the [fs.ErrNotExist] error.
 func IsNotExist(err error) bool {
 	return errors.Is(err, fs.ErrNotExist) || os.IsNotExist(err)
