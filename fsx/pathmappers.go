@@ -8,6 +8,7 @@ package fsx
 
 import (
 	"io/fs"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -34,8 +35,9 @@ var filepathAbs = filepath.Abs
 // PrefixDirPathMapper is a [RealPathMapper] that prepends
 // a base directory to the virtual path.
 //
-// The zero value is invalid. Use [NewRelativePrefixDirPathMapper] or
-// [NewAbsolutePrefixDirPathMapper] to construct a new instance.
+// The zero value is invalid. Use [NewRelativePrefixDirPathMapper],
+// [NewRelativeToCwdPrefixDirPathMapper] or [NewAbsolutePrefixDirPathMapper]
+// to construct a new instance.
 type PrefixDirPathMapper struct {
 	// baseDir is the base directory to prepend.
 	baseDir string
@@ -75,6 +77,40 @@ var NewAbsoluteChdirPathMapper = NewAbsolutePrefixDirPathMapper
 // the top-level package documentation.
 func NewRelativePrefixDirPathMapper(baseDir string) *PrefixDirPathMapper {
 	return &PrefixDirPathMapper{baseDir: baseDir}
+}
+
+// osGetwd allows to mock [os.Getwd] in tests.
+var osGetwd = os.Getwd
+
+// filepathRel allows to mock [filepath.Rel] in tests.
+var filepathRel = filepath.Rel
+
+// NewRelativeToCwdPrefixDirPathMapper returns a [*PrefixDirPathMapper] in which
+// the given base directory is made relative to the current working directory
+// obtained using [os.Getwd] at the time of the call. On failure, it returns an error.
+//
+// # Usage Considerations
+//
+// Use this constructor when you know your program is not going
+// to invoke [os.Chdir] so you can avoid building potentially long
+// paths that could break Unix domain sockets as documented in
+// the top-level package documentation.
+//
+// This constructor explicitly addresses the `rbmk sh` use case where
+// [mvdan.cc/sh/v3/interp] provides us with the absolute path of the
+// current working directory, subcommands run as goroutines, we cannot
+// chdir because we're still in the same process, and we want to minimise
+// the length of paths because of Unix domain sockets path limitations.
+func NewRelativeToCwdPrefixDirPathMapper(path string) (*PrefixDirPathMapper, error) {
+	cwd, err := osGetwd()
+	if err != nil {
+		return nil, err
+	}
+	relPath, err := filepathRel(cwd, path)
+	if err != nil {
+		return nil, err
+	}
+	return NewRelativePrefixDirPathMapper(relPath), nil
 }
 
 // NewRelativeChdirPathMapper is a deprecated alias for [NewRelativePrefixDirPathMapper].
