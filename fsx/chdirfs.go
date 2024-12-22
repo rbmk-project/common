@@ -59,11 +59,15 @@ func (rfs *ChdirFS) Create(name string) (File, error) {
 }
 
 // DialUnix implements [FS].
+//
+// See also the limitations documented in the top-level package docs.
 func (rfs *ChdirFS) DialUnix(name string) (net.Conn, error) {
 	return rfs.dep.DialUnix(rfs.realPath(name))
 }
 
 // ListenUnix implements [FS].
+//
+// See also the limitations documented in the top-level package docs.
 func (rfs *ChdirFS) ListenUnix(name string) (net.Listener, error) {
 	return rfs.dep.ListenUnix(rfs.realPath(name))
 }

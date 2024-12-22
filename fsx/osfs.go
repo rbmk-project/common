@@ -94,11 +94,15 @@ func (OsFS) Create(name string) (File, error) {
 }
 
 // DialUnix implements [FS].
+//
+// See also the limitations documented in the top-level package docs.
 func (OsFS) DialUnix(name string) (net.Conn, error) {
 	return netDialUnix("unix", nil, &net.UnixAddr{Name: name, Net: "unix"})
 }
 
 // ListenUnix implements [FS].
+//
+// See also the limitations documented in the top-level package docs.
 func (OsFS) ListenUnix(name string) (net.Listener, error) {
 	return netListenUnix("unix", &net.UnixAddr{Name: name, Net: "unix"})
 }

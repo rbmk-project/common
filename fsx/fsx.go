@@ -12,6 +12,16 @@ This package is derived from [afero].
 In addition to [afero], we also implement support for dialing
 and listening unix domain sockets, and for Lstat.
 
+# Unix Domain Sockets Portability Note
+
+Beware that Unix domain sockets have path length limitations ranging
+around ~100 chars (e.g., 108 on Linux, 104 on macOS) for historical
+reasons (see, e.g., https://unix.stackexchange.com/q/367008). When using
+Unix domain sockets, therefore, it is possible to get `EINVAL` errors
+in `bind` or `connect`, which occur when the combined path is too long. If
+possible, consider using a relative base path (if you know you'll never
+chdir elsewhere), or possibly use secure temporary directories.
+
 [afero]: https://github.com/spf13/afero
 */
 package fsx
