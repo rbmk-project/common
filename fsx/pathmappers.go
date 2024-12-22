@@ -31,33 +31,33 @@ func (fx RealPathMapperFunc) RealPath(virtualPath string) (realPath string, err 
 // Mockable [filepath.Abs] function for testing.
 var filepathAbs = filepath.Abs
 
-// BaseDirPathMapper is a [RealPathMapper] that prepends
+// ChdirPathMapper is a [RealPathMapper] that prepends
 // a base directory to the virtual path.
 //
-// The zero value is invalid. Use [NewRelativeBaseDirPathMapper] or
-// [NewAbsoluteBaseDirPathMapper] to construct a new instance.
-type BaseDirPathMapper struct {
+// The zero value is invalid. Use [NewRelativeChdirPathMapper] or
+// [NewAbsoluteChdirPathMapper] to construct a new instance.
+type ChdirPathMapper struct {
 	// baseDir is the base directory to prepend.
 	baseDir string
 }
 
-// NewAbsoluteBaseDirPathMapper converts the given directory
+// NewAbsoluteChdirPathMapper converts the given directory
 // to an absolute path and, on success, returns a new
-// [*BaseDirPathMapper] instance. On failure, it returns and error.
+// [*ChdirPathMapper] instance. On failure, it returns and error.
 //
 // # Usage Considerations
 //
-// Use this constructor when you want your [*BaseDirPathMapper] to
+// Use this constructor when you want your [*ChdirPathMapper] to
 // be robust against concurrent invocations of [os.Chdir].
-func NewAbsoluteBaseDirPathMapper(baseDir string) (*BaseDirPathMapper, error) {
+func NewAbsoluteChdirPathMapper(baseDir string) (*ChdirPathMapper, error) {
 	absBaseDir, err := filepathAbs(baseDir)
 	if err != nil {
 		return nil, err
 	}
-	return &BaseDirPathMapper{baseDir: absBaseDir}, nil
+	return &ChdirPathMapper{baseDir: absBaseDir}, nil
 }
 
-// NewRelativeBaseDirPathMapper returns a new [*BaseDirPathMapper]
+// NewRelativeChdirPathMapper returns a new [*ChdirPathMapper]
 // instance without bothering to check if the given directory
 // is relative or absolute.
 //
@@ -67,15 +67,15 @@ func NewAbsoluteBaseDirPathMapper(baseDir string) (*BaseDirPathMapper, error) {
 // to invoke [os.Chdir] so you can avoid building potentially long
 // paths that could break Unix domain sockets as documented in
 // the top-level package documentation.
-func NewRelativeBaseDirPathMapper(baseDir string) *BaseDirPathMapper {
-	return &BaseDirPathMapper{baseDir: baseDir}
+func NewRelativeChdirPathMapper(baseDir string) *ChdirPathMapper {
+	return &ChdirPathMapper{baseDir: baseDir}
 }
 
-// Ensure [BaseDirPathMapper] implements [RealPathMapper].
-var _ RealPathMapper = &BaseDirPathMapper{}
+// Ensure [ChdirPathMapper] implements [RealPathMapper].
+var _ RealPathMapper = &ChdirPathMapper{}
 
 // RealPath implements [RealPathMapper].
-func (b *BaseDirPathMapper) RealPath(virtualPath string) (realPath string, err error) {
+func (b *ChdirPathMapper) RealPath(virtualPath string) (realPath string, err error) {
 	return filepath.Join(b.baseDir, virtualPath), nil
 }
 

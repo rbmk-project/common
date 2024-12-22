@@ -9,16 +9,16 @@ package fsx
 // NewChdirFS creates a new [FS] where each file name is
 // prefixed with the given directory path.
 //
-// Deprecated: use [NewOverlayFS] with [NewRelativeBaseDirPathMapper] instead.
+// Deprecated: use [NewOverlayFS] with [NewRelativeChdirPathMapper] instead.
 func NewChdirFS(dep FS, path string) *ChdirFS {
-	return &ChdirFS{NewOverlayFS(dep, NewRelativeBaseDirPathMapper(path))}
+	return &ChdirFS{NewOverlayFS(dep, NewRelativeChdirPathMapper(path))}
 }
 
 // ChdirFS is the [FS] type returned by [NewChdirFS].
 //
 // The zero value IS NOT ready to use; construct using [NewChdirFS].
 //
-// Deprecated: use [NewOverlayFS] with [NewRelativeBaseDirPathMapper] instead.
+// Deprecated: use [NewOverlayFS] with [NewRelativeChdirPathMapper] instead.
 type ChdirFS struct {
 	*OverlayFS
 }

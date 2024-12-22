@@ -33,12 +33,12 @@ func TestPathMappers(t *testing.T) {
 		cases []testCase
 	}{
 		{
-			group: "BaseDirPathMapper",
+			group: "ChdirPathMapper",
 			cases: []testCase{
 				{
 					name: "absolute mapper with relative path",
 					construct: func(baseDir string) (RealPathMapper, error) {
-						return NewAbsoluteBaseDirPathMapper(baseDir)
+						return NewAbsoluteChdirPathMapper(baseDir)
 					},
 					baseDir: "testdata",
 					path:    "file.txt",
@@ -48,7 +48,7 @@ func TestPathMappers(t *testing.T) {
 				{
 					name: "relative mapper with relative path",
 					construct: func(baseDir string) (RealPathMapper, error) {
-						return NewRelativeBaseDirPathMapper(baseDir), nil
+						return NewRelativeChdirPathMapper(baseDir), nil
 					},
 					baseDir: "testdata",
 					path:    "file.txt",
@@ -58,7 +58,7 @@ func TestPathMappers(t *testing.T) {
 				{
 					name: "absolute mapper with error",
 					construct: func(baseDir string) (RealPathMapper, error) {
-						return NewAbsoluteBaseDirPathMapper(baseDir)
+						return NewAbsoluteChdirPathMapper(baseDir)
 					},
 					baseDir: "testdata",
 					mockAbs: func(path string) (string, error) {
