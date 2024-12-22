@@ -177,3 +177,139 @@ func TestPathMappers(t *testing.T) {
 		})
 	}
 }
+
+func TestRelativeToCwdPrefixDirPathMapper(t *testing.T) {
+	type testCase struct {
+		// name is the name of the test case
+		name string
+
+		// mockCwd is the mock to use for [os.Cwd]
+		mockCwd func() (string, error)
+
+		// mockRel is the mock to use for [filepath.Rel]
+		mockRel func(cwd, path string) (string, error)
+
+		// inputPath is the path passed to [NewRelativeToCwdPrefixDirPathMapper]
+		inputPath string
+
+		// want is the resulting directory that we want
+		want string
+
+		// wantError is the error that we expect
+		wantError error
+	}
+
+	tests := []testCase{
+		{
+			name: "simple relative path",
+			mockCwd: func() (string, error) {
+				return "/base", nil
+			},
+			mockRel: func(cwd, path string) (string, error) {
+				if cwd != "/base" || path != "/base/project" {
+					t.Fatalf("unexpected args: cwd=%q path=%q", cwd, path)
+				}
+				return "project", nil
+			},
+			inputPath: "/base/project",
+			want:      "project",
+		},
+
+		{
+			name: "nested path",
+			mockCwd: func() (string, error) {
+				return "/base", nil
+			},
+			mockRel: func(cwd, path string) (string, error) {
+				if cwd != "/base" || path != "/base/deep/project" {
+					t.Fatalf("unexpected args: cwd=%q path=%q", cwd, path)
+				}
+				return "deep/project", nil
+			},
+			inputPath: "/base/deep/project",
+			want:      "deep/project",
+		},
+
+		{
+			name: "getwd fails",
+			mockCwd: func() (string, error) {
+				return "", errors.New("getwd error")
+			},
+			mockRel: func(cwd, path string) (string, error) {
+				t.Fatal("rel should not be called")
+				return "", nil
+			},
+			inputPath: "/any/path",
+			wantError: errors.New("getwd error"),
+		},
+
+		{
+			name: "rel fails",
+			mockCwd: func() (string, error) {
+				return "/base", nil
+			},
+			mockRel: func(cwd, path string) (string, error) {
+				return "", errors.New("rel error")
+			},
+			inputPath: "/any/path",
+			wantError: errors.New("rel error"),
+		},
+
+		{
+			name: "path outside base",
+			mockCwd: func() (string, error) {
+				return "/base", nil
+			},
+			mockRel: func(cwd, path string) (string, error) {
+				if cwd != "/base" || path != "/other/path" {
+					t.Fatalf("unexpected args: cwd=%q path=%q", cwd, path)
+				}
+				return "../other/path", nil
+			},
+			inputPath: "/other/path",
+			want:      "../other/path", // Note: this is allowed by PrefixDirPathMapper
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Save and restore original functions
+			savedGetwd := osGetwd
+			savedRel := filepathRel
+			defer func() {
+				osGetwd = savedGetwd
+				filepathRel = savedRel
+			}()
+
+			// Install mocks
+			osGetwd = tt.mockCwd
+			filepathRel = tt.mockRel
+
+			// Run test
+			mapper, err := NewRelativeToCwdPrefixDirPathMapper(tt.inputPath)
+			if err != nil {
+				if tt.wantError == nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				if err.Error() != tt.wantError.Error() {
+					t.Fatalf("got error %v, want %v", err, tt.wantError)
+				}
+				return
+			}
+			if tt.wantError != nil {
+				t.Fatalf("expected error %v, got nil", tt.wantError)
+			}
+
+			// Test the mapper
+			got, err := mapper.RealPath("file.txt")
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			want := filepath.Join(tt.want, "file.txt")
+			if got != want {
+				t.Errorf("got %q, want %q", got, want)
+			}
+		})
+	}
+}
