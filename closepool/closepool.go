@@ -11,6 +11,17 @@ import (
 	"sync"
 )
 
+// CloserFunc allows to turn any function into an [io.Closer].
+type CloserFunc func() error
+
+// Ensure that [CloserFunc] implements [io.Closer].
+var _ io.Closer = CloserFunc(nil)
+
+// Close implements io.Closer.
+func (fx CloserFunc) Close() error {
+	return fx()
+}
+
 // Pool allows pooling a set of [io.Closer].
 //
 // The zero value is ready to use.
