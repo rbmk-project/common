@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-// CloserFunc allows to turn any function into an [io.Closer].
+// CloserFunc allows to turn a suitable function into an [io.Closer].
 type CloserFunc func() error
 
 // Ensure that [CloserFunc] implements [io.Closer].
