@@ -25,6 +25,19 @@ func (m *mockCloser) Close() error {
 	return m.err
 }
 
+func TestCloserFunc(t *testing.T) {
+	var closed bool
+	pool := &closepool.Pool{}
+	pool.Add(closepool.CloserFunc(func() error {
+		closed = true
+		return nil
+	}))
+	pool.Close()
+	if !closed {
+		t.Error("expected closer to be closed")
+	}
+}
+
 func TestPool(t *testing.T) {
 	t.Run("successful close", func(t *testing.T) {
 		pool := closepool.Pool{}
