@@ -2,7 +2,10 @@
 
 package mocks
 
-import "crypto/tls"
+import (
+	"context"
+	"crypto/tls"
+)
 
 // TLSConn is a mockable TLS connection.
 type TLSConn struct {
@@ -13,7 +16,7 @@ type TLSConn struct {
 	MockConnectionState func() tls.ConnectionState
 
 	// MockHandshakeContext is the function to call when HandshakeContext is called.
-	MockHandshakeContext func() error
+	MockHandshakeContext func(ctx context.Context) error
 }
 
 // ConnectionState calls MockConnectionState.
@@ -22,6 +25,6 @@ func (c *TLSConn) ConnectionState() tls.ConnectionState {
 }
 
 // HandshakeContext calls MockHandshakeContext.
-func (c *TLSConn) HandshakeContext() error {
-	return c.MockHandshakeContext()
+func (c *TLSConn) HandshakeContext(ctx context.Context) error {
+	return c.MockHandshakeContext(ctx)
 }
