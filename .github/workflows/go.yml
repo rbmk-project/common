@@ -9,15 +9,19 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  # The first entry of the matrix should be the
+  # version indicated inside the `go.mod`
+  PREVIOUS_GOLANG_VERSION: "1.23"
+  CURRENT_GOLANG_VERSION: "1.24"
+
 jobs:
-  build:
+  build_and_test:
     strategy:
       matrix:
         goversion:
-          # The first entry of the matrix should be the
-          # version indicated inside the `go.mod`
-          - "1.23"
-          - "1.24"
+          - "${{ env.PREVIOUS_GOLANG_VERSION }}"
+          - "${{ env.CURRENT_GOLANG_VERSION }}"
 
     runs-on: ubuntu-latest
     steps:
@@ -32,4 +36,23 @@ jobs:
         run: go build ./...
 
       - name: Test
-        run: go test -race -cover ./...
+        run: go test -race ./...
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "${{ env.CURRENT_GOLANG_VERSION }}"
+
+      - name: Measure Coverage
+        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./coverage.out
+          fail_ci_if_error: true

@@ -1,6 +1,6 @@
 # General purpose libraries
 
-[![GoDoc](https://pkg.go.dev/badge/github.com/rbmk-project/common)](https://pkg.go.dev/github.com/rbmk-project/common)
+[![GoDoc](https://pkg.go.dev/badge/github.com/rbmk-project/common)](https://pkg.go.dev/github.com/rbmk-project/common) [![Build Status](https://github.com/rbmk-project/common/actions/workflows/test.yml/badge.svg)](https://github.com/rbmk-project/common/actions) [![codecov](https://codecov.io/gh/rbmk-project/common/branch/main/graph/badge.svg)](https://codecov.io/gh/rbmk-project/common)
 
 This repository contains several general purpose libraries
 reused across different [rbmk](https://github.com/rbmk-project)
