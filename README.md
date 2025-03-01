@@ -6,6 +6,12 @@ This repository contains several general purpose libraries
 reused across different [rbmk](https://github.com/rbmk-project)
 repositories.
 
+## Minimum Required Go Version
+
+We maintain compatibility with the oldest supported version of Go as
+documented by the [Go Release Policy](https://golang.org/doc/devel/release.html#policy)
+and update our minimum required version of Go as needed.
+
 ## Installation
 
 ```sh
