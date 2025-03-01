@@ -46,7 +46,7 @@ jobs:
           go-version: "1.24"
 
       - name: Measure Coverage
-        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+        run: go test -short -race -covermode=atomic -coverprofile=coverage.out ./...
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v5
