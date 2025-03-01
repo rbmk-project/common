@@ -9,19 +9,15 @@ on:
   pull_request:
     branches: ["main"]
 
-env:
-  # The first entry of the matrix should be the
-  # version indicated inside the `go.mod`
-  PREVIOUS_GOLANG_VERSION: "1.23"
-  CURRENT_GOLANG_VERSION: "1.24"
-
 jobs:
   build_and_test:
     strategy:
       matrix:
         goversion:
-          - "${{ env.PREVIOUS_GOLANG_VERSION }}"
-          - "${{ env.CURRENT_GOLANG_VERSION }}"
+          # The first entry of the matrix should be the
+          # version indicated inside the `go.mod`
+          - "go1.23"
+          - "go1.24"
 
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +42,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "${{ env.CURRENT_GOLANG_VERSION }}"
+          # Here we should use the current go version
+          go-version: "go1.24"
 
       - name: Measure Coverage
         run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
