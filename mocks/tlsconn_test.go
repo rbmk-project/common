@@ -3,6 +3,7 @@
 package mocks
 
 import (
+	"context"
 	"crypto/tls"
 	"errors"
 	"testing"
@@ -42,12 +43,12 @@ func TestTLSConn(t *testing.T) {
 	t.Run("HandshakeContext", func(t *testing.T) {
 		expected := errors.New("mocked handshake error")
 		conn := &TLSConn{
-			MockHandshakeContext: func() error {
+			MockHandshakeContext: func(ctx context.Context) error {
 				return expected
 			},
 		}
 
-		err := conn.HandshakeContext()
+		err := conn.HandshakeContext(context.Background())
 		if !errors.Is(err, expected) {
 			t.Fatal("not the error we expected")
 		}
@@ -56,7 +57,7 @@ func TestTLSConn(t *testing.T) {
 	t.Run("Embedded Conn methods", func(t *testing.T) {
 		expected := errors.New("mocked read error")
 		conn := &TLSConn{
-			Conn: Conn{
+			Conn: &Conn{
 				MockRead: func(b []byte) (int, error) {
 					return 0, expected
 				},
