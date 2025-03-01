@@ -10,10 +10,10 @@ import (
 // PacketConn is a mockable [net.PacketConn].
 type PacketConn struct {
 	// MockReadFrom is the function to call when ReadFrom is called.
-	MockReadFrom func(p []byte) (n int, addr net.Addr, err error)
+	MockReadFrom func(p []byte) (int, net.Addr, error)
 
 	// MockWriteTo is the function to call when WriteTo is called.
-	MockWriteTo func(p []byte, addr net.Addr) (n int, err error)
+	MockWriteTo func(p []byte, addr net.Addr) (int, error)
 
 	// MockClose is the function to call when Close is called.
 	MockClose func() error
@@ -34,12 +34,12 @@ type PacketConn struct {
 var _ net.PacketConn = &PacketConn{}
 
 // ReadFrom calls MockReadFrom.
-func (pc *PacketConn) ReadFrom(p []byte) (n int, addr net.Addr, err error) {
+func (pc *PacketConn) ReadFrom(p []byte) (int, net.Addr, error) {
 	return pc.MockReadFrom(p)
 }
 
 // WriteTo calls MockWriteTo.
-func (pc *PacketConn) WriteTo(p []byte, addr net.Addr) (n int, err error) {
+func (pc *PacketConn) WriteTo(p []byte, addr net.Addr) (int, error) {
 	return pc.MockWriteTo(p, addr)
 }
 
