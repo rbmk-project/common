@@ -9,8 +9,8 @@ import (
 
 // TLSConn is a mockable TLS connection.
 type TLSConn struct {
-	// We embed Conn to handle the net.Conn interface.
-	Conn
+	// We embed *Conn to handle the net.Conn interface.
+	*Conn
 
 	// MockConnectionState is the function to call when ConnectionState is called.
 	MockConnectionState func() tls.ConnectionState

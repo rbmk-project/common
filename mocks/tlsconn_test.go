@@ -57,7 +57,7 @@ func TestTLSConn(t *testing.T) {
 	t.Run("Embedded Conn methods", func(t *testing.T) {
 		expected := errors.New("mocked read error")
 		conn := &TLSConn{
-			Conn: Conn{
+			Conn: &Conn{
 				MockRead: func(b []byte) (int, error) {
 					return 0, expected
 				},
